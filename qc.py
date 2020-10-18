@@ -29,24 +29,27 @@ question_words = []
 train_file = open(sys.argv[2], 'r')
 dev_file  = open(sys.argv[3], 'r')
 
-corpus = [line.lower() for line in train_file]
+labels = []
+questions = []
+for line in train_file:
+    label, question = line.split(' ', 1)
+    labels.append(label)
+    questions.append(question)
+
+# corpus = [line.lower() for line in train_file]
 
 stop_words = set(stopwords.words("english"))
 
-# Remove question specific words from the set of stopwords in nltk
-stop_words.remove('what')
-stop_words.remove('where')
-stop_words.remove('when')
-stop_words.remove('which')
-stop_words.remove('who')
-stop_words.remove('whom')
-stop_words.remove('why')
-# Remove other from spotwords list beacuse other is a fine label
-stop_words.remove('other')
+stop_words.add('?')
+stop_words.add(',')
+stop_words.add(';')
+stop_words.add('´')
+stop_words.add('\'')
+stop_words.add('!')
 
 train_token =[]
 
-for line in corpus:
+for line in questions:
         token_line = word_tokenize(line)
         token = [w for w in token_line if not w in stop_words]
         train_token.append(token)
