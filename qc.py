@@ -28,9 +28,9 @@ else:
 train_file = open(sys.argv[2], 'r')
 dev_file  = open(sys.argv[3], 'r')
 
-label_set = set()
-questions = []
-allLabels = list()
+label_set = set()   # non-repeated labels
+questions = []      # only questions
+allLabels = list()  # repeated labels: index allLabels[0] -> label of question_train[0]
 for line in train_file:
     label, question = line.split(' ', 1)
 
@@ -39,19 +39,14 @@ for line in train_file:
 
     questions.append(question)
 
-'''
-    A allLabels e uma lista de todas as labels mesmo repetidas, 
-    ou seja o index allLabel[0] corresponde a label da question_train[0]
 
-    label_set permite a que nao haja labels repetidas
-'''
 
 # Transformar o set de todas as labels numa lista
 label_lst = list(label_set)
 
-# Stop words, e adicionar, pontuacao as stopwords
+# Stop words
 stop_words = set(stopwords.words("english"))
-
+# adicionar pontuacao as stopwords
 stop_words.add('?')
 stop_words.add(',')
 stop_words.add(';')
@@ -59,18 +54,20 @@ stop_words.add('´')
 stop_words.add('\'')
 stop_words.add('!')
 
-questions_train =[]
-tokens = list()
+
+questions_train = [] 
+tokens = list()     # list of tokens
 
 for line in questions:
         # Tokenizer de cada questao e remocao de stopwords
         token_line = word_tokenize(line)
-        token = [w for w in token_line if not w in stop_words]
+        # Questions after tokenization
+        quest2tokens = [w for w in token_line if not w in stop_words]
         # Adicionar a questao a uma lista de questoes
-        questions_train.append(token)
+        questions_train.append(quest2tokens)
 
         # Adicionar o token a lista de tokens se ainda nao existir na lista
-        for w in token:
+        for w in quest2tokens:
             if w not in tokens:
                 tokens.append(w)
 
