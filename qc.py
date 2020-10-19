@@ -77,6 +77,7 @@ for line in questions:
 
 word2vec = np.zeros((len(tokens), len(label_lst)))
 
+# Atencao que so funcionar para --coarse devido as labels
 for tindex in range(len(tokens)):
     for lindex in range(len(questions_train)):
         # saber qual a lablel da questao
