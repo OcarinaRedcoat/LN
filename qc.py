@@ -32,15 +32,6 @@ class ClassifyModel:
 
         return questions, allLabels, label_set
 
-'''
-        coarse = []
-        fine = []
-        if self.model == 'COARSE':
-            coarse, fine = labels.split(':',1)
-            return coarse
-        else:
-            return labels
-'''
 if (len(sys.argv) != 4): 
     print('Error number of arguments.')
     exit(1)
@@ -78,6 +69,8 @@ stop_words.add(';')
 stop_words.add('´')
 stop_words.add('\'')
 stop_words.add('!')
+stop_words.add('.')
+stop_words.add('\'s')
 
 
 questions_train = [] 
@@ -95,6 +88,17 @@ for line in questions:
         for w in quest2tokens:
             if w not in tokens:
                 tokens.append(w)
+
+
+def preprocessDev(devFile):
+    questions_dev = list()
+    for line in devFile:
+        token_line = word_tokenize(line) 
+        quest2tokens = [w for w in token_line if not w in stop_words]
+        questions_dev.append(quest2tokens)
+    return questions_dev
+
+questions_dev = preprocessDev(dev_file)
 
 
 word2vec = np.zeros((len(tokens), len(label_lst)))
