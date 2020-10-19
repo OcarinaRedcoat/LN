@@ -12,7 +12,35 @@ class ClassifyModel:
 
     def word_as_vectors(self):
         pass
+    def gen_features(self, train_file):
+        label_set = set()   # non-repeated labels
+        questions = []      # only questions
+        allLabels = list()  # repeated labels: index allLabels[0] -> label of question_train[0]
+ 
+        for line in train_file:
+            label, question = line.split(' ', 1)
+            
+            if self.model == 'COARSE':
+                coarse, fine = label.split(":",1)
+                label_set.add(coarse)
+                allLabels.append(coarse)
+            else: 
+                label_set.add(label)
+                allLabels.append(label)
 
+            questions.append(question)
+
+        return questions, allLabels, label_set
+
+'''
+        coarse = []
+        fine = []
+        if self.model == 'COARSE':
+            coarse, fine = labels.split(':',1)
+            return coarse
+        else:
+            return labels
+'''
 if (len(sys.argv) != 4): 
     print('Error number of arguments.')
     exit(1)
@@ -28,17 +56,14 @@ else:
 train_file = open(sys.argv[2], 'r')
 dev_file  = open(sys.argv[3], 'r')
 
+
+'''
 label_set = set()   # non-repeated labels
 questions = []      # only questions
 allLabels = list()  # repeated labels: index allLabels[0] -> label of question_train[0]
-for line in train_file:
-    label, question = line.split(' ', 1)
+'''
 
-    label_set.add(label)
-    allLabels.append(label)
-
-    questions.append(question)
-
+questions, allLabels, label_set = model.gen_features(train_file)
 
 
 # Transformar o set de todas as labels numa lista
