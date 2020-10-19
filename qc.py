@@ -105,9 +105,10 @@ for tindex in range(len(tokens)):
         # saber qual a lablel da questao
         label_token = allLabels[lindex]
 
-        if tokens[tindex] in questions_train[lindex]: #FIXME: se o token aparecer mais que uma vez
+        if tokens[tindex] in questions_train[lindex]: 
             # label_lst.index(label_token) index da label na lista de labels
-            word2vec[tindex][label_lst.index(label_token)] += 1
+            how_many_tokens = questions_train[lindex].count(tokens[tindex])
+            word2vec[tindex][label_lst.index(label_token)] += how_many_tokens
 
 print(word2vec)
 
