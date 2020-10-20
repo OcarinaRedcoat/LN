@@ -1,7 +1,11 @@
 import sys
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize 
+from nltk.tokenize import word_tokenize
 import numpy as np
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn import svm
+from sklearn.svm import SVC
 
 class ClassifyModel:
 
@@ -16,15 +20,15 @@ class ClassifyModel:
         label_set = set()   # non-repeated labels
         questions = []      # only questions
         allLabels = list()  # repeated labels: index allLabels[0] -> label of question_train[0]
- 
+
         for line in train_file:
             label, question = line.split(' ', 1)
-            
+
             if self.model == 'COARSE':
                 coarse, fine = label.split(":",1)
                 label_set.add(coarse)
                 allLabels.append(coarse)
-            else: 
+            else:
                 label_set.add(label)
                 allLabels.append(label)
 
@@ -32,7 +36,7 @@ class ClassifyModel:
 
         return questions, allLabels, label_set
 
-if (len(sys.argv) != 4): 
+if (len(sys.argv) != 4):
     print('Error number of arguments.')
     exit(1)
 if (sys.argv[1] == '-fine'):
@@ -73,7 +77,8 @@ stop_words.add('.')
 stop_words.add('\'s')
 
 
-questions_train = [] 
+questions_train = []
+questions_train_str = list()
 tokens = list()     # list of tokens
 
 for line in questions:
@@ -81,8 +86,12 @@ for line in questions:
         token_line = word_tokenize(line)
         # Questions after tokenization
         quest2tokens = [w for w in token_line if not w in stop_words]
+
+        quest2str = ' '.join(quest2tokens)
+
         # Adicionar a questao a uma lista de questoes
         questions_train.append(quest2tokens)
+        questions_train_str.append(quest2str)
 
         # Adicionar o token a lista de tokens se ainda nao existir na lista
         for w in quest2tokens:
@@ -93,9 +102,10 @@ for line in questions:
 def preprocessDev(devFile):
     questions_dev = list()
     for line in devFile:
-        token_line = word_tokenize(line) 
+        token_line = word_tokenize(line)
         quest2tokens = [w for w in token_line if not w in stop_words]
-        questions_dev.append(quest2tokens)
+        quest2str = ' '.join(quest2tokens)
+        questions_dev.append(quest2str)
     return questions_dev
 
 questions_dev = preprocessDev(dev_file)
@@ -109,12 +119,37 @@ for tindex in range(len(tokens)):
         # saber qual a lablel da questao
         label_token = allLabels[lindex]
 
-        if tokens[tindex] in questions_train[lindex]: 
+        if tokens[tindex] in questions_train[lindex]:
             # label_lst.index(label_token) index da label na lista de labels
             how_many_tokens = questions_train[lindex].count(tokens[tindex])
             word2vec[tindex][label_lst.index(label_token)] += how_many_tokens
 
-print(word2vec)
+trainCountVectorize = CountVectorizer()
+wordCount = trainCountVectorize.fit_transform(questions_train_str)
+
+#print(word2vec)
+trainTfIdfTransformer = TfidfTransformer()
+TfIdf = trainTfIdfTransformer.fit_transform(wordCount)
+print(wordCount.shape)
+clf = svm.SVC(kernel='linear') # Linear Kernel
+
+#Train the model using the training sets
+clf.fit(TfIdf, allLabels)
+
+devCountVectorize = CountVectorizer()
+devTfIdfTransformer = TfidfTransformer()
+
+countDec =  devCountVectorize.fit_transform(questions_dev)
+devTfIdf = devTfIdfTransformer.fit_transform(countDec)
+print(countDec.shape)
+sys.exit(0)
+#Predict the response for test dataset
+y_pred = clf.predict(devTfIdf)
+
+
+
+
+print(y_pred)
 
 # Close files
 train_file.close()
