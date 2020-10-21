@@ -128,32 +128,6 @@ for tindex in range(len(tokens)):
             how_many_tokens = questions_train[lindex].count(tokens[tindex])
             word2vec[tindex][label_lst.index(label_token)] += how_many_tokens
 
-'''
-trainCountVectorize = CountVectorizer()
-wordCount = trainCountVectorize.fit_transform(questions_train_str)
-
-#print(word2vec)
-trainTfIdfTransformer = TfidfTransformer()
-TfIdf = trainTfIdfTransformer.fit_transform(wordCount)
-print(wordCount.shape)
-clf = svm.SVC(kernel='linear') # Linear Kernel
-
-#Train the model using the training sets
-clf.fit(TfIdf, allLabels)
-
-devCountVectorize = CountVectorizer()
-devTfIdfTransformer = TfidfTransformer()
-
-countDec =  devCountVectorize.fit_transform(questions_dev)
-devTfIdf = devTfIdfTransformer.fit_transform(countDec)
-print(countDec.shape)
-#sys.exit(0)
-#Predict the response for test dataset
-y_pred = clf.predict(devTfIdf)
-
-print(y_pred)
-'''
-
 countVectorizer = CountVectorizer(binary=True)
 
 train_raw_count = countVectorizer.fit_transform(questions_train_str)
@@ -171,28 +145,9 @@ classifier.fit(train_raw_count, allLabels)
 labels_predict = classifier.predict(test_tfidf)#.reshape(train_tfidf.shape)
 result = list()
 for i in labels_predict:
-    result.append(i)
+    print(i)
 
-print(result)
-
-y_test = open('DEV-labels.txt', 'r')
-y_label = list()
-for line in y_test:
-
-    if sys.argv[1] == '-coarse':
-        coarse, fine = line.split(":",1)
-        y_label.append(coarse)
-    else:
-        aux, trash = line.split('\n')
-        y_label.append(aux)
-print(y_label)
-#y_res = y_pred.readlines()
-#print(y_res[0])
-#print(y_label)
-
-# Model Accuracy: how often is the classifier correct?
-
-print("Accuracy:",metrics.accuracy_score(y_label, result))
+#print(result)
 
 # Close files
 train_file.close()
