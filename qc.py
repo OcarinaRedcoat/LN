@@ -6,6 +6,7 @@ from nltk.stem import WordNetLemmatizer
 
 import numpy as np
 import pandas as pd
+import re
 
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer, TfidfVectorizer
 from sklearn import svm
@@ -20,9 +21,6 @@ class ClassifyModel:
 
     def printModel(self):
         print(self.model)
-
-    def word_as_vectors(self):
-        pass
 
     def gen_features(self, train_file):
         label_set = set()   # non-repeated labels
@@ -43,40 +41,6 @@ class ClassifyModel:
             questions.append(question)
 
         return questions, allLabels, label_set
-
-    def gen_stop_words(self, questions, allLabels, label_lst):
-        questions_train = list()
-        tokens = list()
-
-        for line in questions:
-        # Tokenizer de cada questao e remocao de stopwords
-            token_line = word_tokenize(line)
-            token = [w for w in token_line]
-        # Adicionar a questao a uma lista de questoes
-            questions_train.append(token)
-
-        # Adicionar o token a lista de tokens se ainda nao existir na lista
-            for w in token:
-                if w not in tokens:
-                    tokens.append(w)
-
-        word2vec = np.zeros((len(tokens), len(label_lst)))
-
-        for tindex in range(len(tokens)):
-            for lindex in range(len(questions_train)):
-                # saber qual a lablel da questao
-                label_token = allLabels[lindex]
-
-                if tokens[tindex] in questions_train[lindex]: #FIXME: se o token aparecer mais que uma vez
-                    # label_lst.index(label_token) index da label na lista de labels
-                    word2vec[tindex][label_lst.index(label_token)] += 1
-
-        #print(word2vec)
-        tfIdfTransformer = TfidfTransformer()
-        st_tfidf = tfIdfTransformer.fit_transform(word2vec)
-        print(st_tfidf[5][0])
-        sys.exit(1)
-
 
 
 if (len(sys.argv) != 4):
@@ -101,7 +65,7 @@ questions, allLabels, label_set = model.gen_features(train_file)
 label_lst = list(label_set)
 
 # Stop words
-stop_words = list()#set(stopwords.words("english"))
+stop_words = set(stopwords.words("english"))
 
 questions_train_str = list()
 
@@ -110,12 +74,15 @@ lemmatizer = WordNetLemmatizer()
 
 for line in questions:
         # Tokenizer de cada questao e remocao de stopwords
+
+        line = re.sub("`{2}.*'{2}", '', line)
+        line = re.sub("[0-9^~`´'*+?\"]",'', line)
+
         token_line = word_tokenize(line)
         # Questions after tokenization
 
-        #tokens = [w for w in token_line if w not in stop_words
-
         quest2tokens = [w.lower() for w in token_line]
+
 
         stemmerTokens = [stemmer.stem(w) for w in quest2tokens]
 
@@ -129,23 +96,30 @@ for line in questions:
         questions_train_str.append(quest2str)
 
 
-#model.gen_stop_words(questions_train_str, allLabels, label_lst)
+questions_dev = list()
 
-def preprocessDev(devFile):
-    questions_dev = list()
-    for line in devFile:
+for line in dev_file:
+        # Tokenizer de cada questao e remocao de stopwords
+        line = re.sub("`{2}.*'{2}", '', line)
+        line = re.sub("[0-9^~`´'*+?]",'', line)
+
         token_line = word_tokenize(line)
+        # Questions after tokenization
 
-        #tokens = [w for w in token_line if w not in stop_words]
         quest2tokens = [w.lower() for w in token_line]
+
+
         stemmerTokens = [stemmer.stem(w) for w in quest2tokens]
+
         #lemmonTokens = [lemmatizer.lemmatize(w) for w in stemmerTokens]
 
         quest2str = ' '.join(stemmerTokens)
-        questions_dev.append(quest2str)
-    return questions_dev
+        #quest2str = ' '.join(lemmonTokens)
 
-questions_dev = preprocessDev(dev_file)
+        # Adicionar a questao a uma lista de questoes
+
+        questions_dev.append(quest2str)
+
 
 countVectorizer = CountVectorizer()
 
@@ -159,12 +133,12 @@ train_tfidf = tfIdfTransformer.fit_transform(train_raw_count)
 test_tfidf  = tfIdfTransformer.transform(test_raw_count)
 
 classifier = svm.SVC(kernel='linear')
-classifier.fit(train_raw_count, allLabels)
+classifier.fit(train_tfidf, allLabels)
 
-labels_predict = classifier.predict(test_tfidf)#.reshape(train_tfidf.shape)
+labels_predict = classifier.predict(test_tfidf)
 
-for i in labels_predict:
-    print(i)
+for prediction in labels_predict:
+    print(prediction)
 
 # Close files
 train_file.close()
