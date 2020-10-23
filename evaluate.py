@@ -24,5 +24,7 @@ for line in y_test:
 
 
 # Model Accuracy: how often is the classifier correct?
-
-print("Accuracy:",metrics.accuracy_score(y_label, y_res))
+#print(y_res)
+#print('-')
+#print(y_label)
+print("Accuracy:",metrics.accuracy_score(y_res, y_label))
