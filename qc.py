@@ -23,7 +23,7 @@ class ClassifyModel:
         print(self.model)
 
     def gen_features(self, train_file):
-        label_set = set()   # non-repeated labels
+
         questions = []      # only questions
         allLabels = list()  # repeated labels: index allLabels[0] -> label of question_train[0]
 
@@ -32,16 +32,46 @@ class ClassifyModel:
 
             if self.model == 'COARSE':
                 coarse, fine = label.split(":",1)
-                label_set.add(coarse)
+
                 allLabels.append(coarse)
             else:
-                label_set.add(label)
+
                 allLabels.append(label)
 
             questions.append(question)
 
-        return questions, allLabels, label_set
+        return questions, allLabels
 
+    def pre_processing(self, questions):
+        stop_words = set(stopwords.words("english"))
+
+        stemmer = PorterStemmer()
+        lemmatizer = WordNetLemmatizer()
+
+        pre_processed_quest = list()
+
+        for line in questions:
+                # Tokenizer de cada questao e remocao de stopwords
+                line = re.sub("`{2}.*'{2}", '', line)
+                line = re.sub("[0-9^~`´'*+?]",'', line)
+
+                token_line = word_tokenize(line)
+
+                # Questions after tokenization
+                quest2tokens = [w.lower() for w in token_line]
+
+                stemmerTokens = [stemmer.stem(w) for w in quest2tokens]
+
+                lemmonTokens = [lemmatizer.lemmatize(w) for w in stemmerTokens]
+
+                #quest2str = ' '.join(stemmerTokens)
+                quest2str = ' '.join(lemmonTokens)
+
+                # Adicionar a questao a uma lista de questoes
+
+                pre_processed_quest.append(quest2str)
+
+        return pre_processed_quest
 
 if (len(sys.argv) != 4):
     print('Error number of arguments.')
@@ -58,68 +88,11 @@ else:
 train_file = open(sys.argv[2], 'r')
 dev_file  = open(sys.argv[3], 'r')
 
-questions, allLabels, label_set = model.gen_features(train_file)
+questions, allLabels  = model.gen_features(train_file)
 
 
-# Transformar o set de todas as labels numa lista
-label_lst = list(label_set)
-
-# Stop words
-stop_words = set(stopwords.words("english"))
-
-questions_train_str = list()
-
-stemmer = PorterStemmer()
-lemmatizer = WordNetLemmatizer()
-
-for line in questions:
-        # Tokenizer de cada questao e remocao de stopwords
-
-        line = re.sub("`{2}.*'{2}", '', line)
-        line = re.sub("[0-9^~`´'*+?\"]",'', line)
-
-        token_line = word_tokenize(line)
-        # Questions after tokenization
-
-        quest2tokens = [w.lower() for w in token_line]
-
-
-        stemmerTokens = [stemmer.stem(w) for w in quest2tokens]
-
-        #lemmonTokens = [lemmatizer.lemmatize(w) for w in stemmerTokens]
-
-        quest2str = ' '.join(stemmerTokens)
-        #quest2str = ' '.join(lemmonTokens)
-
-        # Adicionar a questao a uma lista de questoes
-
-        questions_train_str.append(quest2str)
-
-
-questions_dev = list()
-
-for line in dev_file:
-        # Tokenizer de cada questao e remocao de stopwords
-        line = re.sub("`{2}.*'{2}", '', line)
-        line = re.sub("[0-9^~`´'*+?]",'', line)
-
-        token_line = word_tokenize(line)
-        # Questions after tokenization
-
-        quest2tokens = [w.lower() for w in token_line]
-
-
-        stemmerTokens = [stemmer.stem(w) for w in quest2tokens]
-
-        #lemmonTokens = [lemmatizer.lemmatize(w) for w in stemmerTokens]
-
-        quest2str = ' '.join(stemmerTokens)
-        #quest2str = ' '.join(lemmonTokens)
-
-        # Adicionar a questao a uma lista de questoes
-
-        questions_dev.append(quest2str)
-
+questions_train_str = model.pre_processing(questions)
+questions_dev = model.pre_processing(dev_file)
 
 countVectorizer = CountVectorizer()
 
