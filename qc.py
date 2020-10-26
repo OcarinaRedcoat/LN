@@ -5,7 +5,7 @@ from nltk.stem.porter import *
 from nltk.stem import WordNetLemmatizer
 
 import numpy as np
-import pandas as pd
+#import pandas as pd
 import re
 
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer, TfidfVectorizer
@@ -43,7 +43,7 @@ class ClassifyModel:
         return questions, allLabels
 
     def pre_processing(self, questions):
-        stop_words = set(stopwords.words("english"))
+        # stop_words = set(stopwords.words("english"))
 
         stemmer = PorterStemmer()
         lemmatizer = WordNetLemmatizer()
@@ -51,7 +51,7 @@ class ClassifyModel:
         pre_processed_quest = list()
 
         for line in questions:
-                # Tokenizer de cada questao e remocao de stopwords
+                
                 line = re.sub("`{2}.*'{2}", '', line)
                 line = re.sub("[0-9^~`´'*+?]",'', line)
 
