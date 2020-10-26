@@ -27,4 +27,4 @@ for line in y_test:
 #print(y_res)
 #print('-')
 #print(y_label)
-print("Accuracy:",metrics.accuracy_score(y_res, y_label))
+print("Accuracy:",metrics.accuracy_score(y_label, y_res))
