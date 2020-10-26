@@ -106,9 +106,12 @@ classifier.fit(train_tfidf, allLabels)
 
 labels_predict = classifier.predict(test_tfidf)
 
-print(labels_predict)
-#for prediction in labels_predict:
-#    print(prediction)
+pred_lst = list()
+for prediction in labels_predict:
+   pred_lst.append(prediction)
+
+print(pred_lst)
+
 
 # Close files
 train_file.close()
