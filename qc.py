@@ -5,7 +5,6 @@ from nltk.stem.porter import *
 from nltk.stem import WordNetLemmatizer
 
 import numpy as np
-#import pandas as pd
 import re
 
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer, TfidfVectorizer
@@ -43,7 +42,6 @@ class ClassifyModel:
         return questions, allLabels
 
     def pre_processing(self, questions):
-        # stop_words = set(stopwords.words("english"))
 
         stemmer = PorterStemmer()
         lemmatizer = WordNetLemmatizer()
@@ -64,11 +62,9 @@ class ClassifyModel:
 
                 lemmonTokens = [lemmatizer.lemmatize(w) for w in stemmerTokens]
 
-                #quest2str = ' '.join(stemmerTokens)
                 quest2str = ' '.join(lemmonTokens)
 
-                # Adicionar a questao a uma lista de questoes
-
+                # Add the question to a list of questions
                 pre_processed_quest.append(quest2str)
 
         return pre_processed_quest
@@ -88,8 +84,8 @@ else:
 train_file = open(sys.argv[2], 'r')
 dev_file  = open(sys.argv[3], 'r')
 
-questions, allLabels  = model.gen_features(train_file)
 
+questions, allLabels  = model.gen_features(train_file)
 
 questions_train_str = model.pre_processing(questions)
 questions_dev = model.pre_processing(dev_file)
