@@ -23,6 +23,7 @@
 0	12	trinta		3
 0	12	quarenta	4
 0	12	cinquenta	5
+0	17	zero		0
 12	13	eps		0
 12	14	e		eps
 14	15	um		1
@@ -44,6 +45,7 @@
 9	13	eps		7
 10	13	eps		8
 11	13	eps		9
+17	13	eps		0
 13	16	minutos		eps
 13	16	eps		eps
 16
