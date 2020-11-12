@@ -1,0 +1,4 @@
+0	1	dezasseis	dezasseis
+1	2	e		e
+2	3	meia		meia
+3
