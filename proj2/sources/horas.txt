@@ -4,6 +4,7 @@
 15 16 eps 1
 16 14 hora eps
 16 14 eps eps
+0 17 dez 1
 0 1 onze 1
 1 13 eps 1
 0	2 duas 0
