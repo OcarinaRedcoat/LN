@@ -1,0 +1,3 @@
+0	1	oito	oito
+1	2	minutos	minutos
+2

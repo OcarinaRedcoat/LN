@@ -1,0 +1,3 @@
+0	1	doze	doze
+1	2	minutos	minutos
+2

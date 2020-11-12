@@ -1,0 +1,3 @@
+0	1	quatro	quatro
+1	2	minutos	minutos
+2

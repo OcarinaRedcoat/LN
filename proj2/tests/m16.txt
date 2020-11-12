@@ -1,0 +1,3 @@
+0	1	dezasseis	dezasseis
+1	2	minutos	minutos
+2

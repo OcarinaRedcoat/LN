@@ -1,0 +1,3 @@
+0	1	cinco	cinco
+1	2	minutos	minutos
+2
