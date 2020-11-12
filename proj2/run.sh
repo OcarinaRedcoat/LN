@@ -7,7 +7,7 @@ for i in sources/*.txt; do
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
 
-for i in tests/inverter_horas_test/*.txt; do
+for i in tests/rich2text_test/*.txt; do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled_test/$(basename $i ".txt").fst
 done
@@ -24,6 +24,13 @@ rm compiled/text2num_aux.fst
 
 fstconcat compiled/horas.fst compiled/lazy.fst > compiled/lazy2num.fst
 
+# rich2text FIXME: os 20
+
+fstconcat compiled/horas.fst compiled/e.fst | fstproject --project_type=input  > compiled/rich2text_aux.fst 
+fstunion compiled/quartos.fst compiled/meias.fst > compiled/rich2text_aux2.fst
+fstconcat compiled/rich2text_aux.fst compiled/rich2text_aux2.fst > compiled/rich2text.fst
+rm compiled/rich2text_aux.fst compiled/rich2text_aux2.fst
+
 # num2text FIXME: exemplo vinte e quinze minutos | vinte e quarenta e cinco minutos etc ... problema no vinte ele le o "e" e espera uma duas tres
 fstinvert compiled/horas.fst > compiled/invert_horas.fst 
 fstinvert compiled/minutos.fst > compiled/invert_minutos.fst 
@@ -39,5 +46,5 @@ done
 
 for i in compiled_test/*.fst; do
 	echo "Testing the transducer compiled_test/$(basename $i '.fst')"
-	fstcompose compiled_test/$(basename $i) compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
+	fstcompose compiled_test/$(basename $i) compiled/rich2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
 done
