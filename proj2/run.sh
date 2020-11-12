@@ -24,13 +24,11 @@ rm compiled/text2num_aux.fst
 
 fstconcat compiled/horas.fst compiled/lazy.fst > compiled/lazy2num.fst
 
-<<<<<<< HEAD
 # num2text FIXME: exemplo vinte e quinze minutos | vinte e quarenta e cinco minutos etc ... problema no vinte ele le o "e" e espera uma duas tres ||| falta a escrita de minutos e horas
 fstrmepsilon compiled/horas.fst compiled/horas_aux.fst
 fstrmepsilon compiled/minutos.fst compiled/minutos_aux.fst
 fstinvert compiled/horas_aux.fst > compiled/invert_horas.fst 
 fstinvert compiled/minutos_aux.fst > compiled/invert_minutos.fst 
-=======
 # rich2text FIXME: os 20
 
 fstconcat compiled/horas.fst compiled/e.fst | fstproject --project_type=input  > compiled/rich2text_aux.fst 
@@ -41,7 +39,6 @@ rm compiled/rich2text_aux.fst compiled/rich2text_aux2.fst
 # num2text FIXME: exemplo vinte e quinze minutos | vinte e quarenta e cinco minutos etc ... problema no vinte ele le o "e" e espera uma duas tres
 fstinvert compiled/horas.fst > compiled/invert_horas.fst 
 fstinvert compiled/minutos.fst > compiled/invert_minutos.fst 
->>>>>>> f5226cc3e1940f75794e43f3138a60d6a2c58014
 fstinvert compiled/e.fst > compiled/invert_e.fst 
 fstconcat compiled/invert_horas.fst compiled/invert_e.fst > compiled/num2text_aux.fst 
 fstconcat compiled/num2text_aux.fst compiled/invert_minutos.fst > compiled/num2text.fst 
