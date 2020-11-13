@@ -7,7 +7,7 @@ for i in sources/*.txt; do
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
 
-for i in tests/rich2text_test/*.txt; do
+for i in tests/text2num_test/*.txt; do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled_test/$(basename $i ".txt").fst
 done
