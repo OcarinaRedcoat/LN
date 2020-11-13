@@ -1,7 +1,7 @@
 0	1	um		0
 1	2	eps		1
 2	16	minuto		eps 0.5
-2	16	eps		eps 0.7
+2	16	eps		eps 1
 0	3	onze		1
 0	4	dois		0
 0	4	doze		1
@@ -49,5 +49,5 @@
 17	13	eps		0
 18	13	eps		0
 13	16	minutos		eps 0.5
-13	16	eps		eps 0.7
+13	16	eps		eps 1
 16

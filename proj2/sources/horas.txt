@@ -3,7 +3,7 @@
 0 15 uma 0
 15 16 eps 1
 16 14 hora eps 0.5 
-16 14 eps eps 0.7
+16 14 eps eps 1
 0 17 dez 1
 0 1 onze 1
 1 13 eps 1
@@ -38,6 +38,6 @@
 11 12 duas 2
 11 12 tres 3
 12 13 eps eps
-13 14 eps eps 0.7
+13 14 eps eps 1
 13 14 horas eps 0.5
 14
