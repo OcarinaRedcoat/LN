@@ -2,31 +2,24 @@
 
 mkdir -p compiled images compiled_test
 
-for i in sources/*.txt; do
+for i in sources/*.txt tests/*.txt; do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
 
-for i in tests/lazy2num_test/*.txt; do
-	echo "Compiling: $i"
-    fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled_test/$(basename $i ".txt").fst
-done
-
-# TODO 
-
-# text2num FIXME: exemplo vinte e quinze minutos | vinte e quarenta e cinco minutos etc ... problema no vinte ele le o "e" e espera uma duas tres
+# text2num
 
 fstconcat compiled/horas.fst compiled/e.fst > compiled/text2num_aux.fst 
 fstconcat compiled/text2num_aux.fst compiled/minutos.fst > compiled/text2num.fst 
 rm compiled/text2num_aux.fst
 
-# lazy2num FIXME: exemplo vinte e quinze minutos | vinte e quarenta e cinco minutos etc ... problema no vinte ele le o "e" e espera uma duas tres
+# lazy2num 
 
 fstconcat compiled/e.fst compiled/minutos.fst > compiled/eminutos.fst
 fstunion compiled/eminutos.fst compiled/lazy.fst > compiled/lazy2num_aux.fst
 fstconcat compiled/horas.fst compiled/lazy2num_aux.fst > compiled/lazy2num.fst
 
-# rich2text FIXME: os 20
+# rich2text
 
 fstconcat compiled/horas.fst compiled/e.fst | fstproject --project_type=input  > compiled/rich2text_aux.fst 
 fstunion compiled/quartos.fst compiled/meias.fst > compiled/rich2text_aux2.fst
@@ -43,7 +36,7 @@ fstunion compiled/rich.fst compiled/rich2num_aux5.fst > compiled/rich2num_aux6.f
 fstconcat compiled/horas.fst compiled/rich2num_aux6.fst > compiled/rich2num.fst 
 rm compiled/rich2num_aux1.fst compiled/rich2num_aux2.fst compiled/rich2num_aux3.fst compiled/rich2num_aux4.fst compiled/rich2num_aux5.fst compiled/rich2num_aux6.fst
 
-# num2text FIXME: exemplo vinte e quinze minutos | vinte e quarenta e cinco minutos etc ... problema no vinte ele le o "e" e espera uma duas tres
+# num2text 
 fstinvert compiled/horas.fst > compiled/invert_horas.fst 
 fstinvert compiled/minutos.fst > compiled/invert_minutos.fst 
 fstinvert compiled/e.fst > compiled/invert_e.fst 
@@ -56,9 +49,12 @@ for i in compiled/*.fst; do
     fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
 done
 
-for i in compiled_test/*.fst; do
-	echo "Testing the transducer compiled_test/$(basename $i '.fst')"
-	fstcompose compiled_test/$(basename $i) compiled/lazy2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-done
+fstcompose compiled/wakeupA_87636.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/wakeupA_87636.pdf
+fstcompose compiled/wakeupB_87636.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/wakeupB_87636.pdf
+fstcompose compiled/sleepA_87636.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/sleepA_87636.pdf
+fstcompose compiled/sleepB_87636.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/sleepB_87636.pdf
 
-rm compiled/* compiled_test/*
+fstcompose compiled/wakeupC_87699.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/wakeupC_87699.pdf
+fstcompose compiled/wakeupD_87699.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/wakeupD_87699.pdf
+fstcompose compiled/sleepC_87699.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/sleepC_87699.pdf
+fstcompose compiled/sleepD_87699.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt | fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/sleepD_87699.pdf
