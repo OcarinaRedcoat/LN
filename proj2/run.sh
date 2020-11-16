@@ -2,7 +2,7 @@
 
 mkdir -p compiled images
 
-for i in sources/*.txt; do
+for i in sources/*.txt tests/*txt; do
 	echo "Compiling: $i"
     fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
 done
@@ -45,27 +45,18 @@ fstconcat compiled/invert_horas.fst compiled/invert_e.fst > compiled/num2text_au
 fstconcat compiled/num2text_aux.fst compiled/invert_minutos.fst > compiled/num2text.fst 
 rm compiled/invert_horas.fst compiled/invert_minutos.fst compiled/invert_e.fst compiled/num2text_aux.fst 
 
+
+fstcompose compiled/wakeupA_87636.fst compiled/rich2num.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/rich2num_wakeupA_87636.fst  
+fstcompose compiled/wakeupB_87636.fst compiled/num2text.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/num2text_wakeupB_87636.fst 
+fstcompose compiled/sleepA_87636.fst compiled/rich2num.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/rich2num_sleepA_87636.fst  
+fstcompose compiled/sleepB_87636.fst compiled/num2text.fst  | fstshortestpath | fstrmepsilon | fsttopsort >compiled/num2text_sleepB_87636.fst  
+
+fstcompose compiled/wakeupC_87699.fst compiled/rich2num.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/rich2num_wakeupC_87699.fst 
+fstcompose compiled/wakeupD_87699.fst compiled/num2text.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/num2text_wakeupD_87699.fst 
+fstcompose compiled/sleepC_87699.fst compiled/rich2num.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/rich2num_sleepC_87699.fst 
+fstcompose compiled/sleepD_87699.fst compiled/num2text.fst  | fstshortestpath | fstrmepsilon | fsttopsort > compiled/num2text_sleepD_87699.fst 
+
 for i in compiled/*.fst; do
 	echo "Creating image: images/$(basename $i '.fst').pdf"
-    fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
+	fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
 done
-
-for i in tests/*.txt; do
-	echo "Compiling: $i"
-    fstcompile --isymbols=syms.txt --osymbols=syms.txt $i | fstarcsort > compiled/$(basename $i ".txt").fst
-done
-
-fstcompose compiled/wakeupA_87636.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt 
-fstcompose compiled/wakeupB_87636.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-fstcompose compiled/sleepA_87636.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt 
-fstcompose compiled/sleepB_87636.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-
-fstcompose compiled/wakeupC_87699.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-fstcompose compiled/wakeupD_87699.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-fstcompose compiled/sleepC_87699.fst compiled/rich2num.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-fstcompose compiled/sleepD_87699.fst compiled/num2text.fst  | fstshortestpath | fstproject --project_type=output | fstrmepsilon | fsttopsort | fstprint --acceptor --isymbols=./syms.txt
-
-#for i in tests/*fst; do
-#	echo "Creating image: images/$(basename $i '.fst').pdf"
-#    fstdraw --portrait --isymbols=syms.txt --osymbols=syms.txt $i | dot -Tpdf > images/$(basename $i '.fst').pdf
-#done
